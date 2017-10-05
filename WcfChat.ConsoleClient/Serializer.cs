@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace WcfChat.ConsoleClient {
-    class SerializationManager {
+    class Serializer {
         private const string _ticketFileName = @".\user.txt";
 
         public void WriteLoginDataToFile(LoginData data) {

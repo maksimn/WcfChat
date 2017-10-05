@@ -1,5 +1,5 @@
 ﻿namespace WcfChat.ConsoleClient {
-    class ValidationManager {
+    class Validator {
         public bool IsUserNameValid(string userName) {
             return userName != null && userName.Length > 0;
         }
@@ -9,7 +9,8 @@
         }
 
         public bool IsValid(LoginData loginData) {
-            return IsUserNameValid(loginData.Password) && IsUserNameValid(loginData.UserName);
+            return loginData != null && IsUserNameValid(loginData.UserName) && 
+                IsPasswordValid(loginData.Password);
         }
     }
 }
