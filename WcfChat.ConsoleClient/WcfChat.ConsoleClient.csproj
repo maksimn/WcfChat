@@ -44,12 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoginData.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Proxies\AuthClient.cs" />
     <Compile Include="Proxies\ChatClient.cs" />
-    <Compile Include="Serializer.cs" />
-    <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WcfChat.Contracts\WcfChat.Contracts.csproj">

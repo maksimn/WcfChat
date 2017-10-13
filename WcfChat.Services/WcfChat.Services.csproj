@@ -39,15 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthService.cs" />
     <Compile Include="ChatService.cs" />
     <Compile Include="Repositories\IMessageRepository.cs" />
     <Compile Include="Repositories\InputModel\ChatDataInput.cs" />
-    <Compile Include="Repositories\InputModel\UserRegistrationInput.cs" />
-    <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\MemoryRepository.cs" />
     <Compile Include="Repositories\Model\ChatMessage.cs" />
-    <Compile Include="Repositories\Model\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WcfChat.Contracts\WcfChat.Contracts.csproj">

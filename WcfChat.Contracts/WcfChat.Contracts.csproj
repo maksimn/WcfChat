@@ -44,8 +44,6 @@
   <ItemGroup>
     <Compile Include="Data\ChatDataInput.cs" />
     <Compile Include="Data\ChatMessage.cs" />
-    <Compile Include="Data\UserRegistrationData.cs" />
-    <Compile Include="Service\IAuthService.cs" />
     <Compile Include="Service\IChatService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
