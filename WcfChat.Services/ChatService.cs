@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using WcfChat.Contracts.Service;
 using WcfChat.Services.Repositories;
 using ChatDataInputContract = WcfChat.Contracts.Data.ChatDataInput;
@@ -11,8 +12,10 @@ namespace WcfChat.Services {
         private IMessageRepository repo = new MemoryRepository();
 
         public void AddChatMessage(ChatDataInputContract chatMessage) {
-            var chatMessageInput = new ChatDataInputModel() {
-                UserName = chatMessage.UserName,
+            string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
+
+            ChatDataInputModel chatMessageInput = new ChatDataInputModel() {
+                UserName = userName,
                 Text = chatMessage.Text
             };
             repo.AddChatMessage(chatMessageInput);
