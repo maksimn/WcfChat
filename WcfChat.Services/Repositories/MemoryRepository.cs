@@ -20,11 +20,12 @@ namespace WcfChat.Services.Repositories {
             }
         }
 
-        public void AddChatMessage(ChatDataInput chatMessage) {
-            var message = new ChatMessage() {
+        public ChatMessage AddChatMessage(ChatDataInput chatMessage) {
+            ChatMessage message = new ChatMessage() {
                 Id = _messages.Count, Text = chatMessage.Text, UserName = chatMessage.UserName
             };
             _messages.Add(message);
+            return message;
         }
     }
 }

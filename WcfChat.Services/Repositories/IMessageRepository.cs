@@ -6,6 +6,6 @@ namespace WcfChat.Services.Repositories {
     interface IMessageRepository {
         IEnumerable<ChatMessage> ChatMessages { get; }
 
-        void AddChatMessage(ChatDataInput chatMessage);
+        ChatMessage AddChatMessage(ChatDataInput chatMessage);
     }
 }

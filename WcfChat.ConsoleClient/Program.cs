@@ -1,50 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ServiceModel;
 using WcfChat.ConsoleClient.Proxies;
 using WcfChat.Contracts.Data;
+using WcfChat.Contracts.Service;
 
 namespace WcfChat.ConsoleClient {
-    class Program {
-        static void PrintChatMessageInConsole(ChatMessage chatMessage) {
+    class Program : INewChatMessageCallback  {
+        static void Main(string[] args) {
+            new Program().Run();
+        }
+
+        private void Run() {
+            Console.WriteLine("Соединение с чатом...");
+
+            ChatClient chatClient = new ChatClient(new InstanceContext(this));
+            IEnumerable<ChatMessage> chatMessages = null;
+
+            try {
+                chatMessages = chatClient.ChatMessages();
+
+                foreach (ChatMessage chatMessage in chatMessages) {
+                    PrintChatMessageInConsole(chatMessage);
+                }
+                Console.WriteLine();
+
+                // Ввод сообщений в чат
+                while (true) {
+                    string chatMessageText = Console.ReadLine();
+                    ClearCurrentConsoleLine();
+                    ClearCurrentConsoleLine();
+                    if (chatMessageText.Length == 0) {
+                        continue;
+                    } else if (string.Compare(chatMessageText, ":q", true) == 0) {
+                        break;
+                    }
+
+                    chatClient.AddChatMessage(new ChatDataInput() {
+                        Text = chatMessageText
+                    });
+                }
+            } catch (Exception exc) {
+                Console.WriteLine("Произошла ошибка соединения с чатом. Выход из программы.");
+                Console.WriteLine(exc.Message);
+            } finally {
+                try {
+                    chatClient.Close();
+                } catch (Exception) {
+                }
+            }
+        }
+
+        private static void PrintChatMessageInConsole(ChatMessage chatMessage) {
             string placeholder = "**********************************************************************";
             Console.WriteLine($"{placeholder}{chatMessage.Id}");
             Console.WriteLine($"{chatMessage.UserName}:");
             Console.WriteLine(chatMessage.Text);
         }
 
-        static void Main(string[] args) {
-            Console.WriteLine("Соединение с чатом...");
+        public void NewChatMessage(ChatMessage chatMessage) {
+            PrintChatMessageInConsole(chatMessage);
+        }
 
-            ChatClient chatClient = new ChatClient();
-            IEnumerable<ChatMessage> chatMessages = null;
-
-            try {
-                chatMessages = chatClient.ChatMessages();
-            } catch(Exception) {
-                Console.WriteLine("Произошла ошибка соединения с чатом. Выход из программы.");
-                return;
-            }
-
-            foreach(ChatMessage chatMessage in chatMessages) {
-                PrintChatMessageInConsole(chatMessage);
-            }
-            Console.WriteLine();
-
-            // Ввод сообщений в чат
-            while (true) {
-                string chatMessageText = Console.ReadLine();
-                if (chatMessageText.Length == 0) {
-                    continue;
-                } else if (string.Compare(chatMessageText, ":q", true) == 0) {
-                    break;
-                }
-
-                chatClient.AddChatMessage(new ChatDataInput() {
-                    Text = chatMessageText
-                });
-            }
-
-            chatClient.Close();
+        public static void ClearCurrentConsoleLine() {
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
         }
     }
 }

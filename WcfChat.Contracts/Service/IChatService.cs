@@ -3,7 +3,7 @@ using System.ServiceModel;
 using WcfChat.Contracts.Data;
 
 namespace WcfChat.Contracts.Service {
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(INewChatMessageCallback))]
     public interface IChatService {
         [OperationContract]
         IEnumerable<ChatMessage> ChatMessages();
