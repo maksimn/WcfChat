@@ -28,8 +28,7 @@ namespace WcfChat.ConsoleClient {
                 // Ввод сообщений в чат
                 while (true) {
                     string chatMessageText = Console.ReadLine();
-                    ClearCurrentConsoleLine();
-                    ClearCurrentConsoleLine();
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
                     if (chatMessageText.Length == 0) {
                         continue;
                     } else if (string.Compare(chatMessageText, ":q", true) == 0) {
@@ -56,17 +55,11 @@ namespace WcfChat.ConsoleClient {
             Console.WriteLine($"{placeholder}{chatMessage.Id}");
             Console.WriteLine($"{chatMessage.UserName}:");
             Console.WriteLine(chatMessage.Text);
+            Console.WriteLine();
         }
 
         public void NewChatMessage(ChatMessage chatMessage) {
             PrintChatMessageInConsole(chatMessage);
-        }
-
-        public static void ClearCurrentConsoleLine() {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
         }
     }
 }
