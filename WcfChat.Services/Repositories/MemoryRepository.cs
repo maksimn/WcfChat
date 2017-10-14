@@ -6,6 +6,14 @@ namespace WcfChat.Services.Repositories {
     class MemoryRepository : IMessageRepository {
         private static List<ChatMessage> _messages = new List<ChatMessage>();
 
+        static MemoryRepository() {
+            _messages.Add(new ChatMessage() {
+                Id = _messages.Count,
+                Text = "Добро пожаловать в чат",
+                UserName = "Админ"
+            });
+        }
+
         public IEnumerable<ChatMessage> ChatMessages {
             get {
                 return _messages;
