@@ -12,6 +12,8 @@ namespace WcfChat.Services {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class ChatService : IChatService {
         private IMessageRepository repo = new MemoryRepository();
+        private static Dictionary<string, INewChatMessageCallback> clientCallback = 
+            new Dictionary<string, INewChatMessageCallback>();
 
         public void AddChatMessage(ChatDataInputContract chatMessage) {
             string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
@@ -25,14 +27,16 @@ namespace WcfChat.Services {
             INewChatMessageCallback newChatMessageCallback = 
                 OperationContext.Current.GetCallbackChannel<INewChatMessageCallback>();
 
-            if (newChatMessageCallback != null) {
-                newChatMessageCallback.NewChatMessage(new ChatMessageContract() {
-                    Id = newChatMessage.Id,
-                    Text = newChatMessage.Text,
-                    UserName = newChatMessage.UserName
-                });
-            } else {
-                throw new FaultException("ERROR: New Chat Message Callback is null.");
+            clientCallback[userName] = newChatMessageCallback;
+
+            foreach (var callback in clientCallback) {
+                if (callback.Value != null) {
+                    callback.Value.NewChatMessage(new ChatMessageContract() {
+                        Id = newChatMessage.Id,
+                        Text = newChatMessage.Text,
+                        UserName = newChatMessage.UserName
+                    });
+                }
             }
         }
 
