@@ -9,8 +9,12 @@ namespace WcfChat.Services {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class ChatService : IChatService {
         private IMessageRepository repo = new MemoryRepository();
-        private static Dictionary<string, INewChatMessageCallback> clientCallback = 
+        private static Dictionary<string, INewChatMessageCallback> clientCallbacks = 
             new Dictionary<string, INewChatMessageCallback>();
+
+        public ChatService() {
+            SetCallbackChannelForThisUser();
+        }
 
         public void AddChatMessage(string text) {
             string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
@@ -19,24 +23,27 @@ namespace WcfChat.Services {
                 new ChatDataInput() { UserName = userName, Text = text }
             );
 
-            INewChatMessageCallback newChatMessageCallback = 
-                OperationContext.Current.GetCallbackChannel<INewChatMessageCallback>();
-
-            clientCallback[userName] = newChatMessageCallback;
-
-            foreach (var callback in clientCallback) {
-                if (callback.Value != null) {
-                    callback.Value.NewChatMessage(new ChatMessage() {
-                        Id = newChatMessage.Id,
-                        Text = newChatMessage.Text,
-                        UserName = newChatMessage.UserName
-                    });
-                }
-            }
+            BroadcastChatMessage(newChatMessage);
         }
 
         public IEnumerable<ChatMessage> ChatMessages() {
             return repo.ChatMessages;
+        }
+
+        private static void BroadcastChatMessage(ChatMessage chatMessage) {
+            foreach (var callback in clientCallbacks) {
+                if (callback.Value != null) {
+                    callback.Value.NewChatMessage(chatMessage);
+                }
+            }
+        }
+
+        private static void SetCallbackChannelForThisUser() {
+            string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
+            INewChatMessageCallback newChatMessageCallback =
+                OperationContext.Current.GetCallbackChannel<INewChatMessageCallback>();
+
+            clientCallbacks[userName] = newChatMessageCallback;
         }
     }
 }
