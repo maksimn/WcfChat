@@ -9,6 +9,6 @@ namespace WcfChat.Contracts.Service {
         IEnumerable<ChatMessage> ChatMessages();
 
         [OperationContract]
-        void AddChatMessage(ChatDataInput chatMessage);
+        void AddChatMessage(string text);
     }
 }

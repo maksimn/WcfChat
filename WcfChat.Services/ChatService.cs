@@ -4,7 +4,6 @@ using System.ServiceModel;
 using WcfChat.Contracts.Service;
 using WcfChat.Services.Repositories;
 using WcfChat.Services.Repositories.Model;
-using ChatDataInputContract = WcfChat.Contracts.Data.ChatDataInput;
 using ChatDataInputModel = WcfChat.Services.Repositories.InputModel.ChatDataInput;
 using ChatMessageContract = WcfChat.Contracts.Data.ChatMessage;
 
@@ -15,12 +14,12 @@ namespace WcfChat.Services {
         private static Dictionary<string, INewChatMessageCallback> clientCallback = 
             new Dictionary<string, INewChatMessageCallback>();
 
-        public void AddChatMessage(ChatDataInputContract chatMessage) {
+        public void AddChatMessage(string text) {
             string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
 
             ChatDataInputModel chatMessageInput = new ChatDataInputModel() {
                 UserName = userName,
-                Text = chatMessage.Text
+                Text = text
             };
             ChatMessage newChatMessage = repo.AddChatMessage(chatMessageInput);
 

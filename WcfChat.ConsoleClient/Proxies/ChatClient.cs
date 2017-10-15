@@ -8,8 +8,8 @@ namespace WcfChat.ConsoleClient.Proxies {
         public ChatClient(InstanceContext instanceContext) : base(instanceContext) {
         }
 
-        public void AddChatMessage(ChatDataInput chatMessage) {
-            Channel.AddChatMessage(chatMessage);
+        public void AddChatMessage(string text) {
+            Channel.AddChatMessage(text);
         }
 
         public IEnumerable<ChatMessage> ChatMessages() {

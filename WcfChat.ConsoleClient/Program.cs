@@ -35,9 +35,7 @@ namespace WcfChat.ConsoleClient {
                         break;
                     }
 
-                    chatClient.AddChatMessage(new ChatDataInput() {
-                        Text = chatMessageText
-                    });
+                    chatClient.AddChatMessage(chatMessageText);
                 }
             } catch (Exception exc) {
                 Console.WriteLine("Произошла ошибка соединения с чатом. Выход из программы.");

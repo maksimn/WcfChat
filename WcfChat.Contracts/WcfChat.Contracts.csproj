@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="Data\ChatDataInput.cs" />
     <Compile Include="Data\ChatMessage.cs" />
     <Compile Include="Service\IChatService.cs" />
     <Compile Include="Service\INewChatMessageCallback.cs" />
