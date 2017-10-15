@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using WcfChat.Contracts.Service;
 using WcfChat.Services.Repositories;
-using WcfChat.Services.Repositories.Model;
-using ChatDataInputModel = WcfChat.Services.Repositories.InputModel.ChatDataInput;
-using ChatMessageContract = WcfChat.Contracts.Data.ChatMessage;
+using WcfChat.Services.Repositories.InputModel;
+using WcfChat.Contracts.Data;
 
 namespace WcfChat.Services {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
@@ -17,11 +15,9 @@ namespace WcfChat.Services {
         public void AddChatMessage(string text) {
             string userName = ServiceSecurityContext.Current.PrimaryIdentity.Name;
 
-            ChatDataInputModel chatMessageInput = new ChatDataInputModel() {
-                UserName = userName,
-                Text = text
-            };
-            ChatMessage newChatMessage = repo.AddChatMessage(chatMessageInput);
+            ChatMessage newChatMessage = repo.AddChatMessage(
+                new ChatDataInput() { UserName = userName, Text = text }
+            );
 
             INewChatMessageCallback newChatMessageCallback = 
                 OperationContext.Current.GetCallbackChannel<INewChatMessageCallback>();
@@ -30,7 +26,7 @@ namespace WcfChat.Services {
 
             foreach (var callback in clientCallback) {
                 if (callback.Value != null) {
-                    callback.Value.NewChatMessage(new ChatMessageContract() {
+                    callback.Value.NewChatMessage(new ChatMessage() {
                         Id = newChatMessage.Id,
                         Text = newChatMessage.Text,
                         UserName = newChatMessage.UserName
@@ -39,13 +35,8 @@ namespace WcfChat.Services {
             }
         }
 
-        public IEnumerable<ChatMessageContract> ChatMessages() {
-            return repo.ChatMessages.Select(chatMessage => 
-                new ChatMessageContract() {
-                    Id = chatMessage.Id,
-                    Text = chatMessage.Text,
-                    UserName = chatMessage.UserName
-                });
+        public IEnumerable<ChatMessage> ChatMessages() {
+            return repo.ChatMessages;
         }
     }
 }

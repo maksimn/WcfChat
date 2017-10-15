@@ -44,7 +44,6 @@
     <Compile Include="Repositories\IMessageRepository.cs" />
     <Compile Include="Repositories\InputModel\ChatDataInput.cs" />
     <Compile Include="Repositories\MemoryRepository.cs" />
-    <Compile Include="Repositories\Model\ChatMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WcfChat.Contracts\WcfChat.Contracts.csproj">
