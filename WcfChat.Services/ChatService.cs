@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ServiceModel;
 using WcfChat.Contracts.Service;
 using WcfChat.Services.Repositories;
@@ -9,8 +10,8 @@ namespace WcfChat.Services {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class ChatService : IChatService {
         private IMessageRepository repo = new MemoryRepository();
-        private static Dictionary<string, INewChatMessageCallback> clientCallbacks = 
-            new Dictionary<string, INewChatMessageCallback>();
+        private static ConcurrentDictionary<string, INewChatMessageCallback> clientCallbacks = 
+            new ConcurrentDictionary<string, INewChatMessageCallback>();
 
         public ChatService() {
             SetCallbackChannelForThisUser();
@@ -31,7 +32,7 @@ namespace WcfChat.Services {
         }
 
         private static void BroadcastChatMessage(ChatMessage chatMessage) {
-            foreach (var callback in clientCallbacks) {
+            foreach (KeyValuePair<string, INewChatMessageCallback> callback in clientCallbacks) {
                 if (callback.Value != null) {
                     callback.Value.NewChatMessage(chatMessage);
                 }

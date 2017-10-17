@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading;
 using WcfChat.ConsoleClient.Proxies;
 using WcfChat.Contracts.Data;
 using WcfChat.Contracts.Service;
@@ -11,8 +12,13 @@ namespace WcfChat.ConsoleClient {
             new Program().Run();
         }
 
+        static void PrintThreadId() {
+            Console.WriteLine($"Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+        }
+
         private void Run() {
             Console.WriteLine("Соединение с чатом...");
+            // PrintThreadId();
 
             ChatClient chatClient = new ChatClient(new InstanceContext(this));
             IEnumerable<ChatMessage> chatMessages = null;
@@ -58,6 +64,7 @@ namespace WcfChat.ConsoleClient {
 
         public void NewChatMessage(ChatMessage chatMessage) {
             PrintChatMessageInConsole(chatMessage);
+            // PrintThreadId(); // Метод вызывается в другом потоке, не в потоке метода Run()
         }
     }
 }
