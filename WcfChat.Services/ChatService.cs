@@ -5,6 +5,7 @@ using WcfChat.Contracts.Service;
 using WcfChat.Services.Repositories;
 using WcfChat.Services.Repositories.InputModel;
 using WcfChat.Contracts.Data;
+using System;
 
 namespace WcfChat.Services {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
@@ -28,7 +29,14 @@ namespace WcfChat.Services {
         }
 
         public IEnumerable<ChatMessage> ChatMessages() {
-            return repo.ChatMessages;
+            IEnumerable<ChatMessage> chatMessages = null;
+
+            try {
+                chatMessages = repo.ChatMessages;
+            } catch (Exception e) {
+                throw new FaultException($"Error of fetching chat messages.\r\n{e.Message}");
+            }
+            return chatMessages;
         }
 
         private static void BroadcastChatMessage(ChatMessage chatMessage) {

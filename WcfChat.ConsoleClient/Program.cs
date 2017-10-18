@@ -43,8 +43,11 @@ namespace WcfChat.ConsoleClient {
 
                     chatClient.AddChatMessage(chatMessageText);
                 }
+            } catch (FaultException exc) {
+                Console.WriteLine("Произошла ошибка. Выход из программы.");
+                Console.WriteLine(exc.Message);
             } catch (Exception exc) {
-                Console.WriteLine("Произошла ошибка соединения с чатом. Выход из программы.");
+                Console.WriteLine("Произошла ошибка работы с чатом. Выход из программы.");
                 Console.WriteLine(exc.Message);
             } finally {
                 try {
